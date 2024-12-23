@@ -27,10 +27,14 @@
 </head>
 <body>
     <div id="pdf-container">
-        <iframe id="pdf-frame" src="YOUR_PDF_URL" scrolling="yes"></iframe>
+        <iframe id="pdf-frame" src="https://github.com/alexbell-lol/my-family-tree/blob/main/chart%20(2).pdf" scrolling="yes"></iframe>
         <div id="controls">
             <button onclick="zoomIn()">Zoom In</button>
             <button onclick="zoomOut()">Zoom Out</button>
+            <button onclick="scrollLeft()">Left</button>
+            <button onclick="scrollRight()">Right</button>
+            <button onclick="scrollUp()">Up</button>
+            <button onclick="scrollDown()">Down</button>
         </div>
     </div>
 
@@ -52,6 +56,22 @@
             iframe.style.transform = 'scale(' + zoomLevel + ')';
             iframe.style.transformOrigin = 'top left';
             iframe.style.height = (800 * zoomLevel) + 'px';
+        }
+
+        function scrollLeft() {
+            iframe.contentWindow.scrollBy(-100, 0);
+        }
+
+        function scrollRight() {
+            iframe.contentWindow.scrollBy(100, 0);
+        }
+
+        function scrollUp() {
+            iframe.contentWindow.scrollBy(0, -100);
+        }
+
+        function scrollDown() {
+            iframe.contentWindow.scrollBy(0, 100);
         }
     </script>
 </body>
