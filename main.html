@@ -3,66 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My family Tree</title>
+    <title>PDF Viewer</title>
     <style>
-        body {
-            margin: 0;
+        #pdf-container {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-            overflow: hidden;
+            margin-top: 20px;
         }
-        #pdf-viewer {
+        iframe {
+            border: 1px solid black;
             width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
+            height: 800px;
         }
-        canvas {
-            cursor: grab;
+        #controls {
+            margin-top: 10px;
         }
-        canvas:active {
-            cursor: grabbing;
+        button {
+            margin: 5px;
+            padding: 10px;
         }
     </style>
 </head>
 <body>
-    <div id="pdf-viewer">
-        <canvas id="pdf-canvas"></canvas>
+    <div id="pdf-container">
+        <iframe id="pdf-frame" src="YOUR_PDF_URL" scrolling="yes"></iframe>
+        <div id="controls">
+            <button onclick="zoomIn()">Zoom In</button>
+            <button onclick="zoomOut()">Zoom Out</button>
+        </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script>
-        const url = 'your-pdf-file.pdf'; // Replace with your PDF file path
-        const canvas = document.getElementById('pdf-canvas');
-        const ctx = canvas.getContext('2d');
-        const pdfViewer = document.getElementById('pdf-viewer');
-        let pdfDoc = null, pageNum = 1, scale = 1, isDragging = false;
-        let startX, startY, offsetX = 0, offsetY = 0;
+        var zoomLevel = 1;
+        var iframe = document.getElementById('pdf-frame');
 
-        // Load the PDF
-        pdfjsLib.getDocument(url).promise.then(pdf => {
-            pdfDoc = pdf;
-            renderPage(pageNum);
-        });
-
-        // Render the current page
-        function renderPage(num) {
-            pdfDoc.getPage(num).then(page => {
-                const viewport = page.getViewport({ scale });
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport
-                };
-                page.render(renderContext);
-            });
+        function zoomIn() {
+            zoomLevel += 0.1;
+            updateZoom();
         }
 
-        // Zoom in and out
-        pdfViewer.addEventListener('wheel', e => {
-            e.preventDefault();
-            scale += e.deltaY * -0.001;
+        function zoomOut() {
+            zoomLevel -= 0.1;
+            updateZoom();
+        }
+
+        function updateZoom() {
+            iframe.style.transform = 'scale(' + zoomLevel + ')';
+            iframe.style.transformOrigin = 'top left';
+            iframe.style.height = (800 * zoomLevel) + 'px';
+        }
+    </script>
+</body>
+</html>
