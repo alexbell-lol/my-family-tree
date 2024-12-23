@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My family Tree</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            overflow: hidden;
+        }
+        #pdf-viewer {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        canvas {
+            cursor: grab;
+        }
+        canvas:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body>
+    <div id="pdf-viewer">
+        <canvas id="pdf-canvas"></canvas>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script>
+        const url = 'your-pdf-file.pdf'; // Replace with your PDF file path
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+        const pdfViewer = document.getElementById('pdf-viewer');
+        let pdfDoc = null, pageNum = 1, scale = 1, isDragging = false;
+        let startX, startY, offsetX = 0, offsetY = 0;
+
+        // Load the PDF
+        pdfjsLib.getDocument(url).promise.then(pdf => {
+            pdfDoc = pdf;
+            renderPage(pageNum);
+        });
+
+        // Render the current page
+        function renderPage(num) {
+            pdfDoc.getPage(num).then(page => {
+                const viewport = page.getViewport({ scale });
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport
+                };
+                page.render(renderContext);
+            });
+        }
+
+        // Zoom in and out
+        pdfViewer.addEventListener('wheel', e => {
+            e.preventDefault();
+            scale += e.deltaY * -0.001;
